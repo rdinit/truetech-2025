@@ -9,36 +9,17 @@ MIGRATION_FOLDER=$(CURDIR)/migrations
 
 .PHONY: pip-install
 pip-install:
-	pip install -r requirements.txt
+	pip install -r back/api/requirements.txt
 
 .PHONY: docker
 docker:
-	docker-compose up -d --build
+	docker-compose -f back/compose.yml up -d --build
 
 .PHONY: db
 db:
-	docker-compose up db -d --build
+	docker-compose -f back/compose.yml up db -d --build
 
 .PHONY: fastapi
 fastapi:
 	python3 -m uvicorn --app-dir ./back/ main:app --reload --host 0.0.0.0 --port 8001
 
-.PHONY: minio
-minio:
-	docker-compose up minio -d --build
-
-.PHONY: migration-create
-migration-create:
-	goose -dir "$(MIGRATION_FOLDER)" create "$(name)" sql
-
-.PHONY: migration-up
-migration-up:
-	goose -dir "$(MIGRATION_FOLDER)" postgres "$(POSTGRES_SETUP_TEST)" up
-
-.PHONY: migration-down
-migration-down:
-	goose -dir "$(MIGRATION_FOLDER)" postgres "$(POSTGRES_SETUP_TEST)" down
-
-.PHONY: tests
-tests:
-	docker-compose up tests

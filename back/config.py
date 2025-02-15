@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
-    model_config = SettingsConfigDict(env_file=os.environ.get("DOCKER_ENV", "../.env"),
+    model_config = SettingsConfigDict(env_file=os.environ.get("DOCKER_ENV", ".env"),
                                       env_file_encoding="utf-8")
     app_name: str = "Динозаврики МИСИС"
     app_host: str = "http://localhost"

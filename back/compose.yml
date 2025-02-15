@@ -4,8 +4,6 @@ services:
   web:
     build:
       context: api
-      args:
-        - PLATFORM=linux/amd64
     container_name: fastapi_app
     environment:
       DOCKER_ENV: docker.env

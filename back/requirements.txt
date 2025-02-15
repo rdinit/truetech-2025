@@ -1,4 +1,7 @@
 uvicorn~=0.34.0
 fastapi~=0.115.8
 SQLAlchemy~=2.0.38
-eva-decord
+pydantic_settings
+# eva-decord
+timm
+einops

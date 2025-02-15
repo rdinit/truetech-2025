@@ -1,3 +1,4 @@
+from PIL.Image import Image
 from ultralytics import YOLO
 
 # загрузка модели с выбором размера
@@ -19,11 +20,13 @@ def load_model(size):
     
     return model
 
+
 # image - PIL/numpy array/path to image -> детектированные bboxы
-def get_od(image, model, prompt, conf=0.2):
-    model.set_classes([prompt]) # for ex: model.set_classes(['sneakers'])
-    results = model.predict(image, conf=conf) # conf - порог детекции для модели
-    return results # results[0].show() отображает результаты
+def get_od(image: Image, model, prompt, conf=0.2):
+    image.show()
+    model.set_classes([prompt])
+    results = model.predict(image, conf=conf)  # conf - порог детекции для модели
+    return results  # results[0].show() отображает результаты
 
 
 # example
