@@ -6,7 +6,7 @@ from time import sleep
 import ocr_model
 from fastapi import FastAPI, File, UploadFile, Depends
 
-ocr = SimpleOCR()
+ocr = ocr_model.SimpleOCR()
 
 
 app = FastAPI()
