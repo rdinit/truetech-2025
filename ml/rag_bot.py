@@ -22,8 +22,6 @@ from langchain.memory import ConversationBufferMemory
 from langchain.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
 from typing import List, Union, Dict, Any, Optional
-from whisper_model import WhisperModel
-from parsers.notion import fetch_and_save_notion_content
 import os
 
 
@@ -190,15 +188,6 @@ class RAGChatBot:
                         loaders.append(UnstructuredExcelLoader(source))
                     except Exception as e:
                         raise RuntimeError(f"Error loading Excel file '{source}': {e}")
-                elif source.lower().endswith('.mp3'):
-                    try:
-                        transcription = whisper_model.process_sample(source)
-                        temp_txt_path = '/tmp/transcription.txt'
-                        with open(temp_txt_path, 'w', encoding='utf-8') as f:
-                            f.write(transcription)
-                        loaders.append(TextLoader(temp_txt_path, autodetect_encoding=True))
-                    except Exception as e:
-                        raise RuntimeError(f"Error processing .mp3 file '{source}': {e}")
                 else:
                     raise ValueError(f'Unsupported file format: {source}')
             elif mode == 'url':
@@ -209,12 +198,6 @@ class RAGChatBot:
                         raise RuntimeError(f"Error loading URL '{source}': {e}")
                 else:
                     raise ValueError(f'Unsupported URL format: {source}')
-            elif mode == 'notion':
-                try:
-                    path = fetch_and_save_notion_content(source)
-                    loaders.append(TextLoader(path, autodetect_encoding=True))
-                except Exception as e:
-                    raise RuntimeError(f"Error loading Notion Page '{source}': {e}")
             elif mode == 'confluence':
                 try:
                     loaders.append(ConfluenceLoader(url=source))
@@ -225,7 +208,7 @@ class RAGChatBot:
                     loaders.append(
                         GithubFileLoader(
                             repo=source,
-                            access_token='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',
+                            access_token='...',
                             github_api_url='https://api.github.com',
                             file_filter=lambda file_path: file_path.endswith(
                                 '.md'
@@ -406,7 +389,7 @@ class RAGChatBot:
 #         ('url', 'https://t1.ru/'), # ANY URL
 #     ],
 #     from_huggingface=False,
-#     gigachat_api_key='NjBiZDkyMTItOTVlYi00ZGE4LTlmM2YtNGExZWVhZTQ3MDQxOjhiMTAxN2Y2LWRiM2QtNDhiMS1hZTNkLTc3MjA2MDAzNDA1OA==',
+#     gigachat_api_key='...',
 #     embeddings_model='sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
 # )
 
