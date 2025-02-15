@@ -1,6 +1,8 @@
 from PIL.Image import Image
 from ultralytics import YOLO
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 # загрузка модели с выбором размера
 def load_model(size):
     YOLOS = {
@@ -22,11 +24,12 @@ def load_model(size):
 
 
 # image - PIL/numpy array/path to image -> детектированные bboxы
-def get_od(image: Image, model, prompt, conf=0.2):
-    image.show()
+def get_od(image: Image, model, prompt, conf=0.1):
     model.set_classes([prompt])
-    results = model.predict(image, conf=conf)  # conf - порог детекции для модели
-    return results  # results[0].show() отображает результаты
+    results = model.predict(image, conf=conf)
+    for result in results:
+        if len(result.boxes) != 0:
+            return True
 
 
 # example

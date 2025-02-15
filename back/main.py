@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from config import cfg
 from database.connection.session import SessionLocal, get_session
 from back.database.models.user import User
-from ml.preprocess_image import get_open_vocab_detection
+from ml.assistant import Assistant
 from ml.preprocess_image_yolo import load_model, get_od
 
 app = FastAPI(
@@ -19,11 +19,14 @@ app = FastAPI(
 )
 
 model, processor, device = None, None, None
+assistant = None
+
 
 @app.on_event("startup")
 async def load_models():
-    global model, processor, device
+    global model, processor, device, assistant
     model = load_model(size="extra")  # или 'large'
+    assistant = Assistant()
 
 
 @app.post("/process-video")
@@ -35,7 +38,7 @@ async def process_video(
             content={"error": "Model not initialized"},
             status_code=500
         )
-    prompt = "man"
+    prompt = "man in wheelchair"
     # Чтение видео
     contents = await file.read()
     video_buffer = io.BytesIO(contents)
@@ -43,15 +46,14 @@ async def process_video(
     # Загружаем видео
     vr = VideoReader(video_buffer)
     fps = vr.get_avg_fps()  # Получаем FPS видео
-    frame_interval = int(fps * 10)  # Количество кадров за 10 секунд
+    frame_interval = int(fps * 1)  # Количество кадров за 10 секунд
     total_frames = len(vr)
 
     first_time = None
     for idx in range(0, total_frames, frame_interval):
         frame = vr[idx].asnumpy()
         pil_image = Image.fromarray(frame)
-
-        raw_result, bbox_result = get_od(
+        result = get_od(
             model=model,
             # processor=processor,
             # device=device,
@@ -59,14 +61,20 @@ async def process_video(
             prompt=prompt
         )
 
-        contains_person = len(bbox_result) != 0
-
-        if contains_person:
+        if result:
+            pil_image.show()
             current_time = idx / fps  # Конвертируем кадры в секунды
             first_time = current_time
             break
 
     return JSONResponse(content={"first_person_appearance_seconds": first_time})
+
+
+@app.post("/chat")
+async def chat(
+        message: str,
+):
+    return assistant.query(message)
 
 
 @app.post("/register-user")
