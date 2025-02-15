@@ -84,3 +84,8 @@ class WhisperModel:
                 full.append(transcription_eng[0])
 
         return ' '.join(full)
+    
+    
+# example
+# whisper = WhisperModel()
+# result = whisper.process_sample('path to audiofile') # будет транскрибированная речь, говорить можно на любом (практически) языке, транскрибация производится на русский

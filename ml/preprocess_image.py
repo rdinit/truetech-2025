@@ -122,4 +122,4 @@ def get_detecton_with_detailed_desc(image, prompt):
 # model, processor = load_model('large')
 # image = Image.open('path to image')
 # capt = get_caption(image)
-# open_vocab = get_open_vocab_detection(image, 'sneakers') # все промпты на английском !!!
+# open_vocab = get_open_vocab_detection(image, 'sneakers') # все промпты на английском !!! -> будут найдены кроссовки на фото
