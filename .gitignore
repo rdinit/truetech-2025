@@ -172,3 +172,5 @@ cython_debug/
 
 .vscode/*
 .history/
+
+.env
