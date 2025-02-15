@@ -12,7 +12,6 @@ def load_model(size):
         'extra-v2': 'yolov8x-worldv2.pt',
     }
 
-    SIZE = 'extra-v2'
     MODEL_PATH = YOLOS[size]
 
     model = YOLO(MODEL_PATH)
