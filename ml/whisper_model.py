@@ -35,26 +35,9 @@ class WhisperModel:
             os.makedirs(os.path.join(working_dir, 'tmp'))
 
     def process_sample(self, filename):
-        print(filename)
+        print(filename) # .wav file !!!
 
-        try:
-            code = subprocess.call(
-                [
-                    'ffmpeg',
-                    '-y',
-                    '-i',
-                    filename,
-                    '-vn',
-                    '/tmp/audio.wav'
-                ],
-                stderr=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL
-            )
-
-            if code != 0:
-                raise ValueError('Error occurred during audio extraction')
-
-            clip, clip_hz = torchaudio.load('/tmp/audio.wav', backend='ffmpeg')
+        clip, clip_hz = torchaudio.load(filename, backend='ffmpeg')
 
         except Exception as e:
             print(f'Error: {e}')
@@ -84,3 +67,8 @@ class WhisperModel:
                 full.append(transcription_eng[0])
 
         return ' '.join(full)
+    
+    
+# example
+# whisper = WhisperModel()
+# result = whisper.process_sample('path to audiofile') # будет транскрибированная речь, говорить можно на любом (практически) языке, транскрибация производится на русский

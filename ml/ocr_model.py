@@ -8,8 +8,14 @@ class SimpleOCR:
         self.use_gpu = torch.cuda.is_available()
         self.reader = easyocr.Reader(['en', 'ru'], gpu=self.use_gpu)
 
-    def get_text_from_image(self, image_path):
+    # conf - порог уверенности
+    def get_text_from_image(self, image_path, conf=0.5):
         image = cv2.imread(image_path)
         outs = self.reader.readtext(image)
-        texts = [text[1] for text in outs if text[2] >= 0.5]
+        texts = [text[1] for text in outs if text[2] >= conf]
         return ' '.join(texts) if texts else ''
+    
+    
+# example
+# ocr = SimpleOCR()
+# text = ocr.get_text_from_image('path to image') # распознанный с фото текст
