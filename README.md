@@ -13,7 +13,7 @@ Team Members:
 
 Презентация: [тык](https://disk.yandex.ru/d/vSTWwWHFhkuQkA)
 
-Веб-сервис: [тык](https://disk.yandex.ru/)
+Веб-сервис: [тык](https://dino.123581321.ru/)
 
 Swagger API docs: [тык](https://dino.123581321.ru/api/docs)
 
