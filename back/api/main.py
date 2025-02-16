@@ -15,7 +15,7 @@ app = FastAPI(
     description=cfg.app_desc,
     version=cfg.app_version,
     debug=cfg.debug,
-    root_path ='/api'
+    root_path='/api'
 )
 
 searcher, bot = None, None
@@ -32,8 +32,7 @@ features = {
 async def load_models():
     global searcher, bot
     searcher = Searcher(features)
-    api_key = cfg.api_key
-    print(api_key)
+    api_key = 'NjBiZDkyMTItOTVlYi00ZGE4LTlmM2YtNGExZWVhZTQ3MDQxOmNkMjkwZWZhLTVmOTAtNDQ0ZS1iZDY0LWY0MjEyY2ViMzg0Nw=='
     bot = RAGChatBot(
         system_prompt=roles['помощник'],
         data_sources=[
@@ -83,9 +82,8 @@ async def add_source(file: UploadFile = File(...)):
 
 
 @app.post("/search")
-def findtop(data: dict):
-    print(data['text'])
-    response = {'features': Searcher.query(data['text'])}
+def findtop(msg: str):
+    response = {'features': searcher.query(text=msg)}
     return response
 '''
 @app.post("/register-user")
