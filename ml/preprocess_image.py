@@ -1,36 +1,36 @@
-from transformers import AutoProcessor, AutoModelForCausalLM  
+import PIL
+from transformers import AutoProcessor, AutoModelForCausalLM
 from PIL import Image
-import matplotlib.pyplot as plt  
-import matplotlib.patches as patches 
-import requests
-import copy
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import torch
+
 
 # построение bbox на фото для удобного просмотра
 def plot_bbox(image, data):
-    fig, ax = plt.subplots()  
-    ax.imshow(image)  
-      
-    for bbox, label in zip(data['bboxes'], data['labels']):  
-        x1, y1, x2, y2 = bbox  
-        rect = patches.Rectangle((x1, y1), x2-x1, y2-y1, linewidth=1, edgecolor='r', facecolor='none')  
-        ax.add_patch(rect)  
-        plt.text(x1, y1, label, color='white', fontsize=8, bbox=dict(facecolor='red', alpha=0.5))  
-      
-    ax.axis('off')  
-    plt.show()  
-    
+    fig, ax = plt.subplots()
+    ax.imshow(image)
+
+    for bbox, label in zip(data['bboxes'], data['labels']):
+        x1, y1, x2, y2 = bbox
+        rect = patches.Rectangle((x1, y1), x2-x1, y2-y1, linewidth=1, edgecolor='r', facecolor='none')
+        ax.add_patch(rect)
+        plt.text(x1, y1, label, color='white', fontsize=8, bbox=dict(facecolor='red', alpha=0.5))
+
+    ax.axis('off')
+    plt.show()
+
 # получение bbox после open vocab od
-def convert_to_od_format(data):    
-    bboxes = data.get('bboxes', [])  
-    labels = data.get('bboxes_labels', [])  
-        
-    od_results = {  
-        'bboxes': bboxes,  
-        'labels': labels  
-    }  
-      
-    return od_results 
+def convert_to_od_format(data):
+    bboxes = data.get('bboxes', [])
+    labels = data.get('bboxes_labels', [])
+
+    od_results = {
+        'bboxes': bboxes,
+        'labels': labels
+    }
+
+    return od_results
 
 # size in (base, large)
 def load_model(size):
@@ -44,15 +44,16 @@ def load_model(size):
 
     model = AutoModelForCausalLM.from_pretrained(MODEL_ID, trust_remote_code=True, torch_dtype='auto').eval().to(device)
     processor = AutoProcessor.from_pretrained(MODEL_ID, trust_remote_code=True)
-    
-    return model, processor
+
+    return model, processor, device
 
 # image - PIL или numpy array
-def run_example(model, processor, task_prompt, image, text_input=None):
+def run_example(model, processor, device, task_prompt, image: PIL.Image, text_input=None):
     if text_input is None:
         prompt = task_prompt
     else:
         prompt = task_prompt + text_input
+    image.show()
     inputs = processor(text=prompt, images=image, return_tensors="pt").to(device, torch.float16)
     generated_ids = model.generate(
         input_ids=inputs['input_ids'].to(device),
@@ -64,8 +65,8 @@ def run_example(model, processor, task_prompt, image, text_input=None):
     )
     generated_text = processor.batch_decode(generated_ids, skip_special_tokens=False)[0]
     parsed_answer = processor.post_process_generation(
-        generated_text, 
-        task=task_prompt, 
+        generated_text,
+        task=task_prompt,
         image_size=(image.width, image.height)
     )
 
@@ -96,8 +97,8 @@ def get_dense_reg_caption(image):
     return run_example(model, processor, '<DENSE_REGION_CAPTION>', image)
 
 # получить детекцию всех объектов по заданному промпту (главное!!!), пример: инвалиды -> получаем bboxы с инвалидами
-def get_open_vocab_detection(image, prompt):
-    results = run_example(model, processor, '<OPEN_VOCABULARY_DETECTION>', image, prompt)
+def get_open_vocab_detection(model, processor, device, image, prompt):
+    results = run_example(model, processor,  device,'<OPEN_VOCABULARY_DETECTION>', image, prompt)
     bbox_results = convert_to_od_format(results['<OPEN_VOCABULARY_DETECTION>'])
     return results, bbox_results
 

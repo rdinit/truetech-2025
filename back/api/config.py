@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
-    model_config = SettingsConfigDict(env_file=os.environ.get("DOCKER_ENV", "../.env"),
+    model_config = SettingsConfigDict(env_file=os.environ.get("DOCKER_ENV", ".env"),
                                       env_file_encoding="utf-8")
     app_name: str = "Динозаврики МИСИС"
     app_host: str = "http://localhost"
@@ -14,11 +14,11 @@ class Config(BaseSettings):
     debug: bool = False
     logging_level: str = "info"
 
-    postgres_host: str
+    postgres_host: str = 'db'
     postgres_port: int = 5432
-    postgres_db: str
-    postgres_user: str
-    postgres_password: str
+    postgres_db: str = 'db'
+    postgres_user: str = 'user'
+    postgres_password: str = 'password'#os.getenv('POSTGRES_PASSWORD')
 
     @property
     def build_postgres_dsn(self) -> str:

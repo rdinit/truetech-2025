@@ -3,10 +3,10 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 
-class Assistant:
+class Searcher:
     def __init__(self, features: dict):
         '''
-        init ассистента:
+        init поиска:
         - features: словарь вида {ключ фичи: подробное описание фичи}
         '''
         self.features = features
@@ -53,9 +53,9 @@ class Assistant:
 #     ...
 # }
 
-# assistant = Assistant(features)
+# searcher = Searcher(features)
 # user_query = 'хочу оставить заявку на ремонт окон'
-# top_matches = assistant.query(user_query)
+# top_matches = searcher.query(user_query)
 
 # print('Топ-3 совпадения:')
 # for match in top_matches:

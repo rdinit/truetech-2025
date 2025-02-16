@@ -4,17 +4,16 @@ services:
   web:
     build:
       context: api
-      args:
-        - PLATFORM=linux/amd64
+      dockerfile: Dockerfile
     container_name: fastapi_app
     environment:
-      DOCKER_ENV: docker.env
+      DOCKER_ENV: .env
     ports:
       - '8000:8000'
-    env_file:
-      - docker.env
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
+    volumes:
+      - $SENTENCE_TRANSFORMERS_DIR:$SENTENCE_TRANSFORMERS_HOME
 
   db:
     image: postgres:13
@@ -25,6 +24,7 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      
 
 #  minio:
 #    image: minio/minio
@@ -50,5 +50,17 @@ services:
     #        - driver: nvidia
     #          count: 1
     #          capabilities: [gpu]
+  yolo:
+    build:
+      context: yolo
+    container_name: yolo
+    environment:
+      DOCKER_ENV: docker.env
+    ports:
+      - '8000:8000'
+    env_file:
+      - docker.env
+    volumes:
+      - $YOLO_DIR:/yolo_dir
 volumes:
   postgres_data:

@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import Column, Integer, String, TIMESTAMP
 
-from back.database.models.base import Base
+from database.models.base import Base
 
 
 class User(Base):
