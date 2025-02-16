@@ -22,7 +22,7 @@ def load_model(size):
 
 
 # image - PIL/numpy array/path to image -> детектированные bboxы
-def get_od(image: Image, model, prompt, conf=0.2):
+def get_od(image: Image, model, conf=0.2):
     model.set_classes(["man_in_wheelchair", "courier", "ambulance"])
     results = model.predict(image, conf=conf)
     return results  # results[0].show() отображает результаты
