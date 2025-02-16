@@ -1,9 +1,8 @@
 import os
 
 from fastapi import FastAPI
-from pydantic import BaseModel
 
-from rag_bot import RAGChatBot, roles
+from back.api.rag_bot import RAGChatBot, roles
 
 app = FastAPI()
 
@@ -26,20 +25,7 @@ async def load_models():
     )
 
 
-class Answer(BaseModel):
-    answer: str
-    source: str
 
-
-@app.post("/chat")
-async def chat(
-        prompt: str
-):
-    ans, sources = bot.chat(prompt)
-    source = None
-    if len(sources) > 0:
-        source = sources[0].metadata['source']
-    return Answer(answer=ans, source=source)
 
 
 if __name__ == "__main__":

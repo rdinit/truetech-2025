@@ -1,13 +1,11 @@
-import io
+import os
+import shutil
 
-from PIL import Image
-from fastapi import FastAPI, File, UploadFile, Depends, HTTPException, Form
-from decord import VideoReader
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from pydantic import BaseModel
 
+from back.api.rag_bot import RAGChatBot, roles
 from config import cfg
-#from database.connection.session import SessionLocal, get_session
-#from database.models.user import User
 
 from searcher import Searcher
                                 
@@ -19,7 +17,7 @@ app = FastAPI(
     debug=cfg.debug,
 )
 
-searcher = None
+searcher, bot = None, None
 
 features = {
      'просмотр камер': 'просмотр камер видеонаблюдения с возможностью масштабирования и ночного видения',
@@ -28,10 +26,59 @@ features = {
      'заявка на ремонт окон': 'оформление заявки на ремонт окон с выбором времени и специалистов'
 }
 
+
 @app.on_event("startup")
 async def load_models():
-    global searcher
+    global searcher, bot
     searcher = Searcher(features)
+    api_key = cfg.api_key
+    print(api_key)
+    bot = RAGChatBot(
+        system_prompt=roles['помощник'],
+        data_sources=[
+            ('file', 'data/faq.html'),
+        ],
+        from_huggingface=False,
+        gigachat_api_key=api_key,
+        embeddings_model='sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
+    )
+
+
+class Answer(BaseModel):
+    answer: str
+    source: str
+
+
+@app.post("/chat")
+async def chat(
+        prompt: str
+):
+    ans, sources = bot.chat(prompt)
+    source = None
+    if len(sources) > 0:
+        source = sources[0].metadata['source']
+    return Answer(answer=ans, source=source)
+
+
+@app.post("/add_source")
+async def add_source(file: UploadFile = File(...)):
+    uploads_dir = "data"
+    os.makedirs(uploads_dir, exist_ok=True)
+    file_location = os.path.join(uploads_dir, file.filename)
+
+    try:
+        with open(file_location, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка сохранения файла: {e}")
+
+    try:
+        # Добавляем источник; тип источника указан как 'file'
+        bot.add_sources([("file", file_location)])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка при добавлении источника: {e}")
+
+    return {"message": "Источник успешно добавлен", "filename": file.filename}
 
 
 @app.post("/search")

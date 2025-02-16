@@ -8,3 +8,8 @@ einops
 psycopg2-binary
 faiss-cpu
 sentence-transformers
+langchain_community
+gigachat
+transformers
+beautifulsoup4
+lxml

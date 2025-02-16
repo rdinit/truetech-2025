@@ -18,8 +18,9 @@ class Config(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = 'db'
     postgres_user: str = 'user'
-    postgres_password: str = 'password'#os.getenv('POSTGRES_PASSWORD')
+    postgres_password: str = 'password'
 
+    api_key: str = ''
     @property
     def build_postgres_dsn(self) -> str:
         res = (
