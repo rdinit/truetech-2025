@@ -35,7 +35,7 @@ async def process_video(
     # Загружаем видео
     vr = VideoReader(video_buffer)
     fps = vr.get_avg_fps()  # Получаем FPS видео
-    frame_interval = int(fps * 1)  # Количество кадров за 10 секунд
+    frame_interval = int(fps * 1)  # Количество кадров за 1 секунд
     total_frames = len(vr)
 
     first_time = None
