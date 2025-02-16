@@ -1,6 +1,4 @@
-import io
-
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File
 from decord import VideoReader
 from PIL import Image
 import io
@@ -45,8 +43,6 @@ async def process_video(
 
         results = get_od(
             model=model,
-            # processor=processor,
-            # device=device,
             image=pil_image,
         )
 
