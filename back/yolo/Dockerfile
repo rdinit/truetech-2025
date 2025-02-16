@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 # --index-url=https://mirrors.aliyun.com/pypi/simple/
-
+RUN apt install git -y
+RUN pip install --no-cache-dir "git+https://github.com/ultralytics/CLIP.git"
 COPY . .
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

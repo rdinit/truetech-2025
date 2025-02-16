@@ -13,9 +13,12 @@ class Searcher:
         self.keys = list(features.keys())
         self.descriptions = list(features.values())
         cache_folder='/st_dir'
-        self.model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+
+        if not 'downloaded':
+            self.model = SentenceTransformer('/st_dir/models--sentence-transformers--paraphrase-multilingual-MiniLM-L12-v2')
                                          #, cache_folder=cache_folder)
-        
+        else:
+            self.model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
         # эмбеддинги для всех описаний фичей
         embeddings = self.model.encode(self.descriptions, convert_to_numpy=True)
         self.embeddings = np.array(embeddings, dtype='float32')
