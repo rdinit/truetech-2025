@@ -12,6 +12,7 @@ jobs:
     - name: build npm
       run: |
           cd frontend
+          npm install -g pnpm
           pnpm i
           pnpm build
           ls
