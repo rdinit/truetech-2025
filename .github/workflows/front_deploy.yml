@@ -26,6 +26,8 @@ jobs:
           ssh-add /home/runner/.ssh/id_ed25519
     - name: push2serv
       run: |
+          сd frontent
           ls
+          cd ..
           mv frontend/dist frontend/build 
           scp -r frontend/dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/static/
