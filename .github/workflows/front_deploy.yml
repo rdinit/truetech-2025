@@ -12,8 +12,8 @@ jobs:
     - name: build npm
       run: |
           cd frontend
-          npm ci 
-          npm run build
+          pnpm i
+          pnpm build
           ls
     - name: Add SSH key
       run: |
