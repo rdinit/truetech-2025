@@ -2,19 +2,11 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-features = {
-    'просмотр камер': 'просмотр камер видеонаблюдения с возможностью масштабирования и ночного видения',
-    'заказ продуктов': 'заказ свежих продуктов с доставкой на дом',
-    'заказ пропуска': 'заказу пропуска для входа в здание',
-    'заявка на ремонт окон': 'оформление заявки на ремонт окон с выбором времени и специалистов',
-    # ...
-}
 
-
-class Assistant:
-    def __init__(self):
+class Searcher:
+    def __init__(self, features: dict):
         '''
-        init ассистента:
+        init поиска:
         - features: словарь вида {ключ фичи: подробное описание фичи}
         '''
         self.features = features
@@ -61,9 +53,9 @@ class Assistant:
 #     ...
 # }
 
-# assistant = Assistant(features)
+# searcher = Searcher(features)
 # user_query = 'хочу оставить заявку на ремонт окон'
-# top_matches = assistant.query(user_query)
+# top_matches = searcher.query(user_query)
 
 # print('Топ-3 совпадения:')
 # for match in top_matches:

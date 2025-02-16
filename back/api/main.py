@@ -1,15 +1,16 @@
 import io
 
 from PIL import Image
-from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
+from fastapi import FastAPI, File, UploadFile, Depends, HTTPException, Form
 from decord import VideoReader
 from fastapi.responses import JSONResponse
 
 from config import cfg
-from database.connection.session import SessionLocal, get_session
-from back.database.models.user import User
-from ml.assistant import Assistant
-from ml.preprocess_image_yolo import load_model, get_od
+#from database.connection.session import SessionLocal, get_session
+#from database.models.user import User
+
+from searcher import Searcher
+                                
 
 app = FastAPI(
     title=cfg.app_name,
@@ -18,27 +19,32 @@ app = FastAPI(
     debug=cfg.debug,
 )
 
-model, processor, device = None, None, None
-assistant = None
+searcher = None
 
+features = {
+     'просмотр камер': 'просмотр камер видеонаблюдения с возможностью масштабирования и ночного видения',
+     'заказ продуктов': 'заказ свежих продуктов с доставкой на дом',
+     'заказ пропуска': 'заказу пропуска для входа в здание',
+     'заявка на ремонт окон': 'оформление заявки на ремонт окон с выбором времени и специалистов'
+}
 
 @app.on_event("startup")
 async def load_models():
-    global model, processor, device, assistant
-    model = load_model(size="extra")  # или 'large'
-    assistant = Assistant()
+    global searcher
+    searcher = Searcher(features)
 
 
 @app.post("/process-video")
 async def process_video(
-        file: UploadFile = File(...),
+    prompt: str = Form(...),
+    file: UploadFile = File(...),
 ):
     if model is None:
         return JSONResponse(
             content={"error": "Model not initialized"},
             status_code=500
         )
-    prompt = "man in wheelchair"
+    prompt = "man"
     # Чтение видео
     contents = await file.read()
     video_buffer = io.BytesIO(contents)
@@ -46,23 +52,25 @@ async def process_video(
     # Загружаем видео
     vr = VideoReader(video_buffer)
     fps = vr.get_avg_fps()  # Получаем FPS видео
-    frame_interval = int(fps * 1)  # Количество кадров за 10 секунд
+    frame_interval = int(fps * 10)  # Количество кадров за 10 секунд
     total_frames = len(vr)
 
     first_time = None
     for idx in range(0, total_frames, frame_interval):
         frame = vr[idx].asnumpy()
         pil_image = Image.fromarray(frame)
-        result = get_od(
+
+        raw_result, bbox_result = get_od(
             model=model,
             # processor=processor,
-            # device=device,
+             device=device,
             image=pil_image,
             prompt=prompt
         )
 
-        if result:
-            pil_image.show()
+        contains_person = len(bbox_result) != 0
+
+        if contains_person:
             current_time = idx / fps  # Конвертируем кадры в секунды
             first_time = current_time
             break
@@ -70,13 +78,12 @@ async def process_video(
     return JSONResponse(content={"first_person_appearance_seconds": first_time})
 
 
-@app.post("/chat")
-async def chat(
-        message: str,
-):
-    return assistant.query(message)
-
-
+@app.post("/search")
+def findtop(data: dict):
+    print(data['text'])
+    response = {'features': Searcher.query(data['text'])}
+    return response
+'''
 @app.post("/register-user")
 async def register(session: SessionLocal = Depends(get_session)):
     user_id=1
@@ -92,7 +99,7 @@ async def register(session: SessionLocal = Depends(get_session)):
 
     session.add(new_user)
     session.commit()
-
+'''
 
 if __name__ == "__main__":
     import uvicorn

@@ -14,11 +14,11 @@ class Config(BaseSettings):
     debug: bool = False
     logging_level: str = "info"
 
-    postgres_host: str
+    postgres_host: str = 'db'
     postgres_port: int = 5432
-    postgres_db: str
-    postgres_user: str
-    postgres_password: str
+    postgres_db: str = 'db'
+    postgres_user: str = 'user'
+    postgres_password: str = 'password'#os.getenv('POSTGRES_PASSWORD')
 
     @property
     def build_postgres_dsn(self) -> str:
