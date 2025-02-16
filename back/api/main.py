@@ -4,7 +4,7 @@ import shutil
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from pydantic import BaseModel
 
-from back.api.rag_bot import RAGChatBot, roles
+from rag_bot import RAGChatBot, roles
 from config import cfg
 
 from searcher import Searcher
@@ -15,6 +15,7 @@ app = FastAPI(
     description=cfg.app_desc,
     version=cfg.app_version,
     debug=cfg.debug,
+    root_path ='/api'
 )
 
 searcher, bot = None, None
