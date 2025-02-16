@@ -26,7 +26,7 @@ jobs:
           ssh-add /home/runner/.ssh/id_ed25519
     - name: push2serv
       run: |
-          сd frontent
+          сd frontend
           ls
           cd ..
           mv frontend/dist frontend/build 
