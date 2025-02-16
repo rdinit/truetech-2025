@@ -15,7 +15,7 @@ Team Members:
 
 Веб-сервис: [тык](https://disk.yandex.ru/)
 
-Swagger API docs: [тык](https://disk.yandex.ru/)
+Swagger API docs: [тык](https://dino.123581321.ru/api/docs)
 
 ## Кейс "Инклюзивный город"
 
