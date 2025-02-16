@@ -11,7 +11,7 @@ Team Members:
 5) **Кирилл Рыжичкин** - ML Engineer
 6) **Владимир Москвин** - Analyst
 
-Презентация: [тык](https://disk.yandex.ru/)
+Презентация: [тык](https://disk.yandex.ru/d/vSTWwWHFhkuQkA)
 
 Веб-сервис: [тык](https://disk.yandex.ru/)
 
