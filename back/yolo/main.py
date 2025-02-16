@@ -3,6 +3,7 @@ import io
 from fastapi import FastAPI, UploadFile, File, Form
 from decord import VideoReader
 from PIL import Image
+import io
 from fastapi.responses import JSONResponse
 
 from preprocess_image_yolo import load_model, get_od
