@@ -1,4 +1,3 @@
-import PIL
 from transformers import AutoProcessor, AutoModelForCausalLM
 from PIL import Image
 import matplotlib.pyplot as plt

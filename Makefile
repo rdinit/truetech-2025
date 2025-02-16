@@ -17,9 +17,12 @@ docker:
 
 .PHONY: db
 db:
-	docker-compose -f back/compose.yml up db -d --build
+	docker-compose -f back/api/compose.yml up db -d --build
 
 .PHONY: fastapi
 fastapi:
-	python3 -m uvicorn --app-dir ./back/ main:app --reload --host 0.0.0.0 --port 8001
+	python3 -m uvicorn --app-dir ./back/ main:app --reload --host 0.0.0.0 --port 8000
 
+.PHONY: rag
+rag:
+	docker-compose -f back/compose.yml up rag -d --build

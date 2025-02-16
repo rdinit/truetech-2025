@@ -25,6 +25,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       
+  rag:
+    build:
+      context: rag
+      dockerfile: Dockerfile
+    container_name: rag
+    environment:
+      DOCKER_ENV: .env
+    ports:
+      - '8000:8000'
 
 #  minio:
 #    image: minio/minio

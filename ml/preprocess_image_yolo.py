@@ -26,7 +26,9 @@ def load_model(size):
 # image - PIL/numpy array/path to image -> детектированные bboxы
 def get_od(image: Image, model, prompt, conf=0.1):
     model.set_classes([prompt])
-    results = model.predict(image, conf=conf)
+    results = model.predict(image, conf=conf, verbose=False,  # Отключаем лишний вывод
+        stream=False,    # Отключаем потоковый режим
+        workers=0)
     for result in results:
         if len(result.boxes) != 0:
             return True

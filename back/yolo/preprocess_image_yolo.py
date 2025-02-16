@@ -14,7 +14,7 @@ def load_model(size):
         'extra-v2': 'yolov8x-worldv2.pt',
     }
 
-    MODEL_PATH = '/yolo_dir/' + YOLOS[size]
+    MODEL_PATH = YOLOS[size]
 
     model = YOLO(MODEL_PATH)
     
@@ -23,9 +23,8 @@ def load_model(size):
 
 # image - PIL/numpy array/path to image -> детектированные bboxы
 def get_od(image: Image, model, prompt, conf=0.2):
-    image.show()
-    model.set_classes([prompt])
-    results = model.predict(image, conf=conf)  # conf - порог детекции для модели
+    model.set_classes(["man_in_wheelchair", "courier", "ambulance"])
+    results = model.predict(image, conf=conf)
     return results  # results[0].show() отображает результаты
 
 

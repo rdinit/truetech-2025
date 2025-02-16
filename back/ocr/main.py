@@ -1,10 +1,5 @@
-from typing import Union
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import requests
-from time import sleep
 import ocr_model
-from fastapi import FastAPI, File, UploadFile, Depends
+from fastapi import FastAPI
 
 ocr = ocr_model.SimpleOCR()
 
