@@ -9,7 +9,7 @@ from config import cfg
 
 from searcher import Searcher
                                 
-
+root_path = os.environ.get("ROOT_PATH", "")
 app = FastAPI(
     title=cfg.app_name,
     description=cfg.app_desc,
