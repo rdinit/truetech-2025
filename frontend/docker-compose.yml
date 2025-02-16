@@ -1,0 +1,8 @@
+services:
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    ports:
+      - "443:443"
