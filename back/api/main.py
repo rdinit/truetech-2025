@@ -1,13 +1,11 @@
 import os
 import shutil
-
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from pydantic import BaseModel
-
 from rag_bot import RAGChatBot, roles
 from config import cfg
-
 from searcher import Searcher
+                         
                                 
 root_path = os.environ.get("ROOT_PATH", "")
 app = FastAPI(
@@ -32,7 +30,7 @@ features = {
 async def load_models():
     global searcher, bot
     searcher = Searcher(features)
-    api_key = 'NjBiZDkyMTItOTVlYi00ZGE4LTlmM2YtNGExZWVhZTQ3MDQxOmNkMjkwZWZhLTVmOTAtNDQ0ZS1iZDY0LWY0MjEyY2ViMzg0Nw=='
+    api_key = '...'
     bot = RAGChatBot(
         system_prompt=roles['помощник'],
         data_sources=[
@@ -105,5 +103,4 @@ async def register(session: SessionLocal = Depends(get_session)):
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -2,11 +2,13 @@ import easyocr
 import torch
 import cv2
 
+
 def json2opencv(string_image):
     comma = string_image.index(',') + 1
     jpg_original = base64.b64decode(string_image[comma:])
     jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
     return cv2.imdecode(jpg_as_np, flags=1)
+
 
 class SimpleOCR:
     def __init__(self):

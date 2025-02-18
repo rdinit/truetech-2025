@@ -3,11 +3,9 @@ from decord import VideoReader
 from PIL import Image
 import io
 from fastapi.responses import JSONResponse
-
 from preprocess_image_yolo import load_model, get_od
 
 app = FastAPI()
-
 model, processor, device = None, None, None
 
 
@@ -58,7 +56,7 @@ async def process_video(
 
     return JSONResponse(content={"first_person_appearance_seconds": first_time})
 
+
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)

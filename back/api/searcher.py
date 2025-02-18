@@ -3,6 +3,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import os
 
+
 class Searcher:
     def __init__(self, features: dict):
         '''
